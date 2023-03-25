@@ -71,7 +71,7 @@ public class HealthBar : MonoBehaviour
         if (_lastHealth == _damageable.GetCurrentHealth())
             return;
 
-        Debug.Log(_damageable.GetCurrentHealth());
+        //Debug.Log(_damageable.GetCurrentHealth());
 
         _lastHealth = _damageable.GetCurrentHealth();
 

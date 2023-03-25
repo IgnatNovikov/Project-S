@@ -75,7 +75,7 @@ public class BaseAttack : MonoBehaviour, IAttack
         if (enemy == null)
             return;
 
-        Debug.Log(other.name);
+        //Debug.Log(other.name);
         _hittedColliders.Add(other);
 
         DoDamage(enemy);

@@ -15,17 +15,29 @@ public class EnemyController : MonoBehaviour, IEnemy
     private Transform _target;
     private NavMeshAgent _agent;
     private ITakeDamage _healthController;
+    private Rigidbody _rigidbody;
+
+    private bool _isKnockBack;
+    private float _knockBackPower;
+    private float _knockBackReduce;
+    private WaitForSeconds _knockBackTime;
 
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _rigidbody = GetComponent<Rigidbody>();
         _healthController = GetComponent<ITakeDamage>();
 
         _healthController.SetOnDamageAction(KnocbackAction);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        if (_isKnockBack)
+        {
+            KnockBacking();
+        }
+
         if (_target == null)
             return;
 
@@ -43,6 +55,11 @@ public class EnemyController : MonoBehaviour, IEnemy
         //face target
     }
 
+    private void KnockBacking()
+    {
+        _rigidbody.MovePosition(transform.position + -transform.forward * Time.deltaTime * _knockBackPower);
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -54,8 +71,28 @@ public class EnemyController : MonoBehaviour, IEnemy
         _target = playerTransform;
     }
 
-    private void KnocbackAction(float power)
+    private void KnocbackAction(float power, float time)
     {
-        GetComponent<Rigidbody>().AddForce(-transform.forward * power);
+        _isKnockBack = true;
+        _knockBackPower = power;
+        _knockBackTime = new WaitForSeconds(time);
+
+        StartCoroutine(IsKnockBacking());
+
+        /*
+        GetComponent<Rigidbody>().AddForce(-transform.forward * power, ForceMode.Acceleration);
+        Debug.DrawLine(transform.position, - transform.forward * power, Color.red);
+        */
+    }
+
+    private IEnumerator IsKnockBacking()
+    {
+        _agent.isStopped = true;
+        _agent.velocity = Vector3.zero;
+
+        yield return _knockBackTime;
+
+        _isKnockBack = false;
+        _agent.isStopped = false;
     }
 }

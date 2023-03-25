@@ -8,21 +8,19 @@ public interface ITakeDamage
     public void TakeDamage(float damage);
     public float GetCurrentHealth();
     public float GetMaxHealth();
-    public void SetOnDamageAction(UnityAction<float> action);
+    public void SetOnDamageAction(UnityAction<float, float> action);
 }
 
 public class BaseHealthController : MonoBehaviour, ITakeDamage
 {
     [Header("Settings")]
     [SerializeField] private float _maxHealth;
-    [SerializeField] private float _knocbackPower;
-
-    [Header("Components")]
-    [SerializeField] private HealthBar _healthBar;
+    [SerializeField] private float _knockbackPower;
+    [SerializeField] private float _knockBackDuration;
 
     private float _health;
 
-    private UnityAction<float> _onDamageAction;
+    private UnityAction<float, float> _onDamageAction;
 
     private void Start()
     {
@@ -39,11 +37,11 @@ public class BaseHealthController : MonoBehaviour, ITakeDamage
 
     public virtual void TakeDamage(float damage)
     {
-        _onDamageAction?.Invoke(_knocbackPower);
+        _onDamageAction?.Invoke(_knockbackPower, _knockBackDuration);
 
         _health -= damage;
 
-        Debug.Log(_health);
+        //Debug.Log(_health);
 
         if (_health <= 0)
         {
@@ -62,7 +60,7 @@ public class BaseHealthController : MonoBehaviour, ITakeDamage
         return _maxHealth;
     }
 
-    public void SetOnDamageAction(UnityAction<float> action)
+    public void SetOnDamageAction(UnityAction<float, float> action)
     {
         _onDamageAction = action;
     }
