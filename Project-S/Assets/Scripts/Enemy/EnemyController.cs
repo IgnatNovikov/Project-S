@@ -14,10 +14,14 @@ public class EnemyController : MonoBehaviour, IEnemy
 
     private Transform _target;
     private NavMeshAgent _agent;
+    private ITakeDamage _healthController;
 
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _healthController = GetComponent<ITakeDamage>();
+
+        _healthController.SetOnDamageAction(KnocbackAction);
     }
 
     private void Update()
@@ -48,5 +52,10 @@ public class EnemyController : MonoBehaviour, IEnemy
     public void Init(Transform playerTransform)
     {
         _target = playerTransform;
+    }
+
+    private void KnocbackAction(float power)
+    {
+        GetComponent<Rigidbody>().AddForce(-transform.forward * power);
     }
 }
