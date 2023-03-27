@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 3354058159430570432}
   - component: {fileID: 8404715967389678136}
   - component: {fileID: 7227651334913384901}
+  - component: {fileID: 3464694840135352954}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -186,6 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lookRadius: 10
+  _knockBackAnimationName: GotHit
 --- !u!114 &7227651334913384901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +203,26 @@ MonoBehaviour:
   _maxHealth: 100
   _knockbackPower: 5
   _knockBackDuration: 0.15
+--- !u!95 &3464694840135352954
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4137122873351752832}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 88b3f9fc114f0e749af45e2801ae5dec, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6382470484252760771
 GameObject:
   m_ObjectHideFlags: 0

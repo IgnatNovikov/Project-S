@@ -12,10 +12,14 @@ public class EnemyController : MonoBehaviour, IEnemy
 {
     [SerializeField] private float _lookRadius = 10f;
 
+    [Header("Animations")]
+    [SerializeField] private string _knockBackAnimationName;
+
     private Transform _target;
     private NavMeshAgent _agent;
     private ITakeDamage _healthController;
     private Rigidbody _rigidbody;
+    private Animator _animator;
 
     private bool _isKnockBack;
     private float _knockBackPower;
@@ -26,6 +30,7 @@ public class EnemyController : MonoBehaviour, IEnemy
     {
         _agent = GetComponent<NavMeshAgent>();
         _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
         _healthController = GetComponent<ITakeDamage>();
 
         _healthController.SetOnDamageAction(KnocbackAction);
@@ -89,6 +94,7 @@ public class EnemyController : MonoBehaviour, IEnemy
     {
         _agent.isStopped = true;
         _agent.velocity = Vector3.zero;
+        _animator.SetTrigger(_knockBackAnimationName);
 
         yield return _knockBackTime;
 
