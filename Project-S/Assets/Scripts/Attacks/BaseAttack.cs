@@ -16,10 +16,12 @@ public class BaseAttack : MonoBehaviour, IAttack
 
     private WaitForSeconds _attackTime;
 
+    private IMover _mover;
     private bool _isAttacking = false;
 
     private void Start()
     {
+        _mover = GetComponentInParent<IMover>();
         _attackColliders = GetComponentsInChildren<Collider>().ToList();
 
         _attackTime = new WaitForSeconds(_attackConfig.AttackTime);
@@ -42,13 +44,14 @@ public class BaseAttack : MonoBehaviour, IAttack
     private IEnumerator AttackProcess()
     {
         _isAttacking = true;
+        _mover?.MovementEnable(false);
 
         yield return _attackTime;
 
         SwitchColliders(false);
-
         _hittedColliders.Clear();
 
+        _mover?.MovementEnable(true);
         _isAttacking = false;
     }
 
@@ -75,7 +78,6 @@ public class BaseAttack : MonoBehaviour, IAttack
         if (enemy == null)
             return;
 
-        //Debug.Log(other.name);
         _hittedColliders.Add(other);
 
         DoDamage(enemy);

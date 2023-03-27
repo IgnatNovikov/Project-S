@@ -188,6 +188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lookRadius: 10
   _knockBackAnimationName: GotHit
+  _knockBackDurationAnimationName: Duration
 --- !u!114 &7227651334913384901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,8 +202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 100
-  _knockbackPower: 5
-  _knockBackDuration: 0.15
+  _knockbackPower: 2
+  _knockBackDuration: 0.3
 --- !u!95 &3464694840135352954
 Animator:
   serializedVersion: 4

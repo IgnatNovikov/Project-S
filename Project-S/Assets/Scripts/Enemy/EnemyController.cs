@@ -14,6 +14,7 @@ public class EnemyController : MonoBehaviour, IEnemy
 
     [Header("Animations")]
     [SerializeField] private string _knockBackAnimationName;
+    [SerializeField] private string _knockBackDurationAnimationName;
 
     private Transform _target;
     private NavMeshAgent _agent;
@@ -23,6 +24,7 @@ public class EnemyController : MonoBehaviour, IEnemy
 
     private bool _isKnockBack;
     private float _knockBackPower;
+    private float _knockBackDuration;
     private float _knockBackReduce;
     private WaitForSeconds _knockBackTime;
 
@@ -80,9 +82,10 @@ public class EnemyController : MonoBehaviour, IEnemy
     {
         _isKnockBack = true;
         _knockBackPower = power;
+        _knockBackDuration = 1f / time;
         _knockBackTime = new WaitForSeconds(time);
 
-        StartCoroutine(IsKnockBacking());
+        StartCoroutine(KnockBack());
 
         /*
         GetComponent<Rigidbody>().AddForce(-transform.forward * power, ForceMode.Acceleration);
@@ -90,11 +93,12 @@ public class EnemyController : MonoBehaviour, IEnemy
         */
     }
 
-    private IEnumerator IsKnockBacking()
+    private IEnumerator KnockBack()
     {
         _agent.isStopped = true;
         _agent.velocity = Vector3.zero;
         _animator.SetTrigger(_knockBackAnimationName);
+        _animator.SetFloat(_knockBackDurationAnimationName, _knockBackDuration);
 
         yield return _knockBackTime;
 

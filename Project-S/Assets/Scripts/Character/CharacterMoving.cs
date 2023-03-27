@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CharacterMoving : MonoBehaviour
+public interface IMover
+{
+    public void MovementEnable(bool enable);
+}
+
+public class CharacterMoving : MonoBehaviour, IMover
 {
     [SerializeField] private CharacterController _characterController;
 
@@ -17,20 +22,22 @@ public class CharacterMoving : MonoBehaviour
     private Vector2 _currentMovementInput;
     private Vector3 _currentMovement;
     private bool _isMovementPressed;
+    private bool _movementEnable;
+
+    private void Awake()
+    {
+        _movementEnable = true;
+    }
 
     public void SetInput(PlayerInput input)
     {
         _input = input;
 
         //Keyboard
-        //_input.CharacterControls.Movement.started += OnMovementInput;
         _input.CharacterControls.Movement.canceled += OnMovementInput;
 
         //Controller
         _input.CharacterControls.Movement.performed += OnMovementInput;
-        //_input.CharacterControls.MousePosition.performed += HandleRotation;
-
-        //_input.CharacterControls.Enable();
     }
 
     private void OnMovementInput(InputAction.CallbackContext context)
@@ -46,9 +53,11 @@ public class CharacterMoving : MonoBehaviour
         if (_characterController == null)
             return;
 
+        if (!_movementEnable)
+            return;
+
         _characterController.Move(_currentMovement * Time.deltaTime * _movementSpeed);
         HandleGravity();
-        //HandleMovement();
         HandleRotation();
     }
 
@@ -68,24 +77,6 @@ public class CharacterMoving : MonoBehaviour
         */
     }
 
-    /*
-    private void HandleRotation()
-    {
-        Vector3 positionToLookAt;
-
-        positionToLookAt.x = _currentMovement.x;
-        positionToLookAt.y = 0f;
-        positionToLookAt.z = _currentMovement.z;
-        Quaternion currentRotation = transform.rotation;
-
-        if (_isMovementPressed)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
-            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, _rotationSpeed * Time.deltaTime);
-        }
-    }
-    */
-
     private void HandleGravity()
     {
         if (_characterController.isGrounded)
@@ -99,10 +90,8 @@ public class CharacterMoving : MonoBehaviour
         }
     }
 
-    //private void HandleRotation(InputAction.CallbackContext context)
     private void HandleRotation()
     {
-        //Vector2 screenMousePosition = context.ReadValue<Vector2>();
         Vector2 screenMousePosition = Mouse.current.position.ReadValue();
 
         Ray ray = Camera.main.ScreenPointToRay(screenMousePosition);
@@ -115,5 +104,10 @@ public class CharacterMoving : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(lookPosition);
             transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
+    }
+
+    public void MovementEnable(bool enable)
+    {
+        _movementEnable = enable;
     }
 }
