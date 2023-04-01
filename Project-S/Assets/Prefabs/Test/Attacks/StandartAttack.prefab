@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5127026884947545167}
   - component: {fileID: 7217809434184586753}
   - component: {fileID: 2630234101952563281}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: AttackCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   - component: {fileID: 7939911136161980605}
   - component: {fileID: 6974867057735183700}
   - component: {fileID: 5260261419924833411}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: StandartAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -15,18 +15,34 @@ public class CharacterMoving : MonoBehaviour, IMover
     [SerializeField] private float _movementSpeed = 10f;
     [SerializeField] private float _rotationSpeed = 1f;
     [SerializeField] private float _gravityMultiplier = 100f;
+
+    [SerializeField] private float _dashSpeed = 30f;
+    [SerializeField] private float _dashTime = 1f;
+
+    [SerializeField] private int _evadeLayer;
     [SerializeField] private LayerMask _layerMask;
 
     private PlayerInput _input;
 
     private Vector2 _currentMovementInput;
     private Vector3 _currentMovement;
+
+    private int _defaultLayer;
+    private float _movementModificator;
     private bool _isMovementPressed;
     private bool _movementEnable;
+    private bool _isDashing;
+
+    private WaitForSeconds _dashWaiter;
 
     private void Awake()
     {
         _movementEnable = true;
+        _isDashing = false;
+        _movementModificator = 1f;
+        _defaultLayer = gameObject.layer;
+
+        _dashWaiter = new WaitForSeconds(_dashTime);
     }
 
     public void SetInput(PlayerInput input)
@@ -35,6 +51,7 @@ public class CharacterMoving : MonoBehaviour, IMover
 
         //Keyboard
         _input.CharacterControls.Movement.canceled += OnMovementInput;
+        _input.CharacterControls.Dash.started += OnDashInput;
 
         //Controller
         _input.CharacterControls.Movement.performed += OnMovementInput;
@@ -48,6 +65,14 @@ public class CharacterMoving : MonoBehaviour, IMover
         _isMovementPressed = _currentMovementInput.x != 0 || _currentMovementInput.y != 0;
     }
 
+    private void OnDashInput(InputAction.CallbackContext context)
+    {
+        if (_isDashing)
+            return;
+
+        StartCoroutine(Dashing());
+    }
+
     private void Update()
     {
         if (_characterController == null)
@@ -56,7 +81,7 @@ public class CharacterMoving : MonoBehaviour, IMover
         if (!_movementEnable)
             return;
 
-        _characterController.Move(_currentMovement * Time.deltaTime * _movementSpeed);
+        _characterController.Move(_currentMovement * Time.deltaTime * _movementSpeed * _movementModificator);
         HandleGravity();
         HandleRotation();
     }
@@ -104,6 +129,19 @@ public class CharacterMoving : MonoBehaviour, IMover
             Quaternion targetRotation = Quaternion.LookRotation(lookPosition);
             transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
+    }
+
+    private IEnumerator Dashing()
+    {
+        _isDashing = true;
+        _movementModificator = _dashSpeed;
+        gameObject.layer = _evadeLayer;
+
+        yield return _dashWaiter;
+
+        gameObject.layer = _defaultLayer;
+        _movementModificator = 1f;
+        _isDashing = false;
     }
 
     public void MovementEnable(bool enable)
